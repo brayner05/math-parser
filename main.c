@@ -14,6 +14,7 @@
  * Factor -> [0-9]+(.[0-9]*)? | (Expr)
  */
 
+// `char*` redefined as string for readability
 typedef char* string;
 
 // Types of tokens to accept
@@ -23,20 +24,24 @@ typedef enum {
     TK_NUMBER
 } TokenType;
 
+// Token structure
 typedef struct {
     TokenType type;
 } Token;
 
+// A structure representing a lexical error
 typedef struct LexicalError {
     struct LexicalError *next;
     string message;
 } LexicalError;
 
+// A linked list of lexer errors
 typedef struct {
     LexicalError *first;
     LexicalError *last;
 } LexicalErrorList;
 
+// The lexer/tokenizer
 typedef struct {
     Token *tokens;
     size_t current;
@@ -44,6 +49,12 @@ typedef struct {
     LexicalErrorList errors;
 } Lexer;
 
+/**
+ * A constructor for the Lexer struct. Accepts a pointer to an
+ * instance of a lexer, in which the default state of a lexer will
+ * be written. That is `*lexer` will be a fresh lexer instance.
+ * @param lexer the address of an empty lexer instance to write to
+ */
 void Lexer_Init(Lexer *lexer) {
     lexer->tokens = NULL;
     lexer->current = 0;
@@ -51,6 +62,13 @@ void Lexer_Init(Lexer *lexer) {
     lexer->errors = (LexicalErrorList) { .first = NULL, .last = NULL };
 }
 
+/**
+ * Add a lexical error to the lexer without crashing the application.
+ * This is done so that the user can get as much information as possible
+ * about what went wrong, rather than terminating after a single error.
+ * @param lexer the lexer to operate on
+ * @param message the error message
+ */
 void Lexer_AddError(Lexer *lexer, string message) {
     if (lexer->errors.first == NULL) {
         // LexicalError
@@ -58,6 +76,11 @@ void Lexer_AddError(Lexer *lexer, string message) {
     }
 }
 
+/**
+ * Read a single line from the user and store that line in the
+ * string `*dst`.
+ * @param dst a pointer to a string to which the line will be written
+ */
 int nextline(string *dst) {
     size_t block_size = 8;
     size_t capacity = block_size;
