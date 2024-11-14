@@ -37,25 +37,6 @@ typedef struct {
  */
 void Lexer_Init(Lexer *lexer, string source);
 
-/**
- * Add a lexical error to the lexer without crashing the application.
- * This is done so that the user can get as much information as possible
- * about what went wrong, rather than terminating after a single error.
- * @param lexer the lexer to operate on
- * @param message the error message
- */
-void Lexer_AddError(Lexer *lexer, string message);
-
-bool Lexer_IsAtEnd(Lexer *lexer);
-
-char Lexer_Consume(Lexer *lexer);
-
-char Lexer_Peek(Lexer *lexer);
-
-void Lexer_AddToken(Lexer *lexer, TokenType type, double value);
-
-void Lexer_ParseToken(Lexer *lexer);
-
 Token *Lexer_Tokenize(Lexer *lexer);
 
 #endif

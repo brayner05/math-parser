@@ -12,7 +12,14 @@ void Lexer_Init(Lexer *lexer, string source) {
     lexer->errors = (LexicalErrorList) { .first = NULL, .last = NULL };
 }
 
-void Lexer_AddError(Lexer *lexer, string message) {
+/**
+ * Add a lexical error to the lexer without crashing the application.
+ * This is done so that the user can get as much information as possible
+ * about what went wrong, rather than terminating after a single error.
+ * @param lexer the lexer to operate on
+ * @param message the error message
+ */
+static void Lexer_AddError(Lexer *lexer, string message) {
     LexicalError *error = (LexicalError *) malloc(sizeof(LexicalError));
     *error = (LexicalError) { 
         .next = NULL,
@@ -31,22 +38,22 @@ void Lexer_AddError(Lexer *lexer, string message) {
     lexer->had_error = true;
 }
 
-bool Lexer_IsAtEnd(Lexer *lexer) {
+static bool Lexer_IsAtEnd(Lexer *lexer) {
     return lexer->current >= strlen(lexer->source);
 }
 
-char Lexer_Consume(Lexer *lexer) {
+static char Lexer_Consume(Lexer *lexer) {
     return lexer->source[lexer->current++];
 }
 
-char Lexer_Peek(Lexer *lexer) {
+static char Lexer_Peek(Lexer *lexer) {
     if (Lexer_IsAtEnd(lexer)) {
         return '\0';
     }
     return lexer->source[lexer->current];
 }
 
-void Lexer_AddToken(Lexer *lexer, TokenType type, double value) {
+static void Lexer_AddToken(Lexer *lexer, TokenType type, double value) {
     string lexeme = (string) calloc((lexer->current - lexer->start + 1), sizeof(char));
     substring(lexeme, lexer->source, lexer->start, lexer->current);
 
@@ -58,7 +65,7 @@ void Lexer_AddToken(Lexer *lexer, TokenType type, double value) {
     lexer->tokens[lexer->token_count++] = (Token) { .type = type, .lexeme = lexeme, .value = value };
 }
 
-void Lexer_ParseToken(Lexer *lexer) {
+static void Lexer_ParseToken(Lexer *lexer) {
     char ch = Lexer_Consume(lexer);
     if (isspace(ch)) return;
     switch (ch) {

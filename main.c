@@ -73,7 +73,7 @@ int main(void) {
                 puts(err->message);
             }
         }
-
+    
         free(line);
     }
 }
