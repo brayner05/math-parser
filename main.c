@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
+// Store in dst a substring of src from start (inclusive) to end (exclusive)
 #define substring(dst, src, start, end) memcpy((dst), &(src)[(start)], (end) - (start))
 
 /**
@@ -70,10 +71,19 @@ void Lexer_Init(Lexer *lexer) {
  * @param message the error message
  */
 void Lexer_AddError(Lexer *lexer, string message) {
+    LexicalError *error = (LexicalError *) malloc(sizeof(LexicalError));
+    *error = (LexicalError) { 
+        .next = NULL,
+        .message = message
+    };
+
     if (lexer->errors.first == NULL) {
-        // LexicalError
-        // lexer->errors.first = lexer->errors.last = 
+        lexer->errors.first = lexer->errors.last = error;
+        return;
     }
+
+    lexer->errors.last->next = error;
+    lexer->errors.last = error;
 }
 
 /**
@@ -122,6 +132,10 @@ int main(void) {
             free(line);
             exit(0);
         }
+
+        Lexer lexer;
+        Lexer_Init(&lexer);
+
         free(line);
     }
 }
