@@ -37,6 +37,10 @@ typedef struct {
  */
 void Lexer_Init(Lexer *lexer, string source);
 
+/**
+ * Get a list of tokens parsed from the input source.
+ * @param lexer the lexer instance to tokenize from
+ */
 Token *Lexer_Tokenize(Lexer *lexer);
 
 #endif
