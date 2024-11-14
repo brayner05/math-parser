@@ -65,6 +65,25 @@ static void Lexer_AddToken(Lexer *lexer, TokenType type, double value) {
     lexer->tokens[lexer->token_count++] = (Token) { .type = type, .lexeme = lexeme, .value = value };
 }
 
+static void Lexer_ParseNumber(Lexer *lexer) {
+    while (!Lexer_IsAtEnd(lexer) && isdigit(Lexer_Peek(lexer))) {
+        Lexer_Consume(lexer);
+    }
+
+    if (!Lexer_IsAtEnd(lexer) && Lexer_Peek(lexer) == '.') {
+        Lexer_Consume(lexer); // consume the dot token
+        while (!Lexer_IsAtEnd(lexer) && isdigit(Lexer_Peek(lexer))) {
+            Lexer_Consume(lexer);
+        }
+    }
+
+    string lexeme = (string) calloc(lexer->current - lexer->start + 1, sizeof(char));
+    substring(lexeme, lexer->source, lexer->start, lexer->current);
+    double value = strtod(lexeme, NULL);
+
+    Lexer_AddToken(lexer, TK_NUMBER, value);
+}
+
 static void Lexer_ParseToken(Lexer *lexer) {
     char ch = Lexer_Consume(lexer);
     if (isspace(ch)) return;
@@ -75,7 +94,14 @@ static void Lexer_ParseToken(Lexer *lexer) {
         case '/': Lexer_AddToken(lexer, TK_SLASH, 0.00); break;
         case '(': Lexer_AddToken(lexer, TK_LPAREN, 0.00); break;
         case ')': Lexer_AddToken(lexer, TK_RPAREN, 0.00); break;
-        default:  Lexer_AddError(lexer, "Invalid Token"); break;
+        default: {
+            if (isdigit(ch)) {
+                Lexer_ParseNumber(lexer);
+                break;
+            }
+            Lexer_AddError(lexer, "Invalid Token"); 
+            break;
+        }
     }
 }
 
