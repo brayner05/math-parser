@@ -1,5 +1,14 @@
 
+CC = gcc
+CFLAGS = -g -Wall
+
+EXEC = calculate
+
+BIN = bin
+
 SRC = $(wildcard ./*.c) $(wildcard ./util/*.c) $(wildcard ./lexer/*.c)
 
-all: $(SRC)
-	gcc $(SRC)
+all: $(EXEC)
+
+$(EXEC): $(SRC)
+	$(CC) $(CFLAGS) -o $(BIN)/$(EXEC) $(SRC)

@@ -47,6 +47,7 @@ int nextline(string *dst) {
 
     // NULL terminate the string
     (*dst)[length] = '\0';
+    return 0;
 }
 
 int main(void) {
@@ -64,7 +65,7 @@ int main(void) {
         Token *tokens = Lexer_Tokenize(&lexer);
 
         for (int i = 0; i < lexer.token_count; i++) {
-            Token *token = &lexer.tokens[i];
+            Token *token = &tokens[i];
             printf("Type: %s, Lexeme: \"%s\", Value: %lf\n", TokenType_ToString(token->type), token->lexeme, token->value);
         }
 
