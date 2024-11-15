@@ -80,6 +80,7 @@ static void Lexer_ParseNumber(Lexer *lexer) {
     string lexeme = (string) calloc(lexer->current - lexer->start + 1, sizeof(char));
     substring(lexeme, lexer->source, lexer->start, lexer->current);
     double value = strtod(lexeme, NULL);
+    free(lexeme);
 
     Lexer_AddToken(lexer, TK_NUMBER, value);
 }
@@ -111,4 +112,20 @@ Token *Lexer_Tokenize(Lexer *lexer) {
         lexer->start = lexer->current;
     }
     return lexer->tokens;
+}
+
+void Lexer_CleanUp(Lexer *lexer) {
+    // Clean up errors
+    LexicalError *err = lexer->errors.first;
+    while (err != NULL) {
+        LexicalError *next = err->next;
+        free(err);
+        err = next;
+    }
+    
+    // Clean up tokens
+    for (size_t i = 0; i < lexer->token_count; ++i) {
+        Token_CleanUp(&lexer->tokens[i]);
+    }
+    free(lexer->tokens);
 }

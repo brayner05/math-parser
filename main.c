@@ -37,6 +37,7 @@ int main(void) {
             }
         }
     
+        Lexer_CleanUp(&lexer);
         free(line);
     }
 }

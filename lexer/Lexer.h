@@ -43,4 +43,6 @@ void Lexer_Init(Lexer *lexer, string source);
  */
 Token *Lexer_Tokenize(Lexer *lexer);
 
+void Lexer_CleanUp(Lexer *lexer);
+
 #endif

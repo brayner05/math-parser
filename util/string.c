@@ -21,7 +21,6 @@ int nextline(string *dst) {
             capacity += block_size;
             *dst = (char *) realloc(*dst, (capacity + 1) * sizeof(char));
             if (*dst == NULL) {
-                free(*dst);
                 return -1;
             }
         }

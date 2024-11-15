@@ -12,3 +12,7 @@ string TokenType_ToString(TokenType type) {
     }
     return NULL;
 }
+
+void Token_CleanUp(Token *token) {
+    free(token->lexeme);
+}

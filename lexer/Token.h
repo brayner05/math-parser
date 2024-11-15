@@ -22,6 +22,7 @@ typedef struct {
 
 
 string TokenType_ToString(TokenType type);
+void Token_CleanUp(Token *token);
 
 
 #endif
